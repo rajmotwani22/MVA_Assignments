@@ -1,0 +1,55 @@
+---
+title: "homework1"
+author: "Raj Motwani"
+date: "2024-02-12"
+output: html_document
+---
+
+```{r}
+# 1. What is the distribution of billionaires by age, country, and industry?
+# 
+# 2.
+# Understanding the distribution of billionaires across different demographic factors such as age, country, and industry can provide insights into wealth accumulation patterns, economic trends, and social dynamics. It can help me to understand what are the areas for potential intervention, assess the effectiveness of policies aimed at wealth distribution, and understand the impact of globalization on wealth concentration.
+# 
+# 3. Collection of Data
+# For this analysis, I will collect data on billionaires from a reputable source such as Forbes or Bloomberg. The dataset should include the following variables:
+#Dependent variable: Number of billionaires
+#Independent variables: country, source of wealth, self-made status, gender, birth day, consumer price index (CPI) of the country, GDP of the country, tax revenue
+# 
+# 4. Data Dictionary:
+# Certainly, here's the data dictionary with descriptions and data types together:
+# 
+# - Age: Age of the billionaire (Integer)
+# - Country: Country where the billionaire resides ( String)
+# - City: City where the billionaire resides ( String)
+# - Source: Source of the billionaire's wealth ( String)
+# - Industries: Industries in which the billionaire operates or made their wealth ( String)
+# - CountryOfCitizenship: Country of citizenship of the billionaire ( String)
+# - Organization: Organization or company associated with the billionaire ( String)
+# - SelfMade: Whether the billionaire is self-made or inherited wealth ( String or Boolean)
+# - Status: Status or ranking of the billionaire (e.g., net worth ranking) ( String or Integer)
+# - Gender: Gender of the billionaire ( String)
+# - BirthDate: Date of birth of the billionaire (Date)
+# - LastName: Last name of the billionaire ( String)
+# - FirstName: First name of the billionaire ( String)
+# - Title: Title or honorific of the billionaire ( String)
+# - Date: Date of data collection or reporting (Date)
+# - State: State where the billionaire resides ( String)
+# - ResidenceStat eRegion: Region or state where the billionaire's residence is located ( String)
+# - BirthYear: Year of birth of the billionaire (Integer)
+# - BirthMonth: Month of birth of the billionaire (Integer)
+# - BirthDay: Day of birth of the billionaire (Integer)
+# - CPI_country: Consumer Price Index (CPI) of the country (Float)
+# - CPI_change_country: Change in Consumer Price Index (CPI) of the country (Float)
+# - GDP_country: Gross Domestic Product (GDP) of the country (Float)
+# - Gross_tertiary_education_enrollment: Gross tertiary education enrollment rate in the country (Float)
+# - Gross_primary_education_enrollment_country: Gross primary education enrollment rate in the country (Float)
+# - Life_expectancy_country: Life expectancy in the country (Float)
+# - Tax_revenue_country_country: Tax revenue of the country (Float)
+# - Total_tax_rate_country: Total tax rate in the country (Float)
+# - Population_country: Population of the country (Integer)
+# - Latitude_country: Latitude of the country (Float)
+# - Longitude_country: Longitude of the country (Float)
+
+View(Billionaires.Statistics.Dataset)
+```
