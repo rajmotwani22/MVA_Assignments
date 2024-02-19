@@ -1,0 +1,80 @@
+---
+title: "HW2_RajM"
+author: "Raj Motwani"
+date: "2024-02-19"
+output: html_document
+---
+
+1. State your question
+-> What is the distribution of billionaires age? 
+-> What is final worth of billioniares based on their age?
+-> What is the final worth based on gender?
+-> What is the final worth based on age and if they are self made or not?
+```{r}
+library(readr)
+data <- read_csv("/Users/raj/Downloads/Billionaires Statistics Dataset.csv")
+# Load required libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+
+# Convert birthDate to date format
+data$birthDate <- as.Date(data$birthDate, format = "%m/%d/%Y %H:%M")
+
+# Display summary of the dataset
+summary(data)
+attach(data)
+data
+
+# Univariate Analysis
+# Histogram of Age
+ggplot(data, aes(x = age)) +
+  geom_histogram(binwidth = 5, fill = "lightblue", color = "black") +
+  labs(title = "Distribution of Age",
+       x = "Age",
+       y = "Frequency")
+#Displays the distribution of ages in the dataset, with bins of width 5, showing the frequency of individuals within each age range.
+#Most of the billioniares according to 2024 are of the old aged from 50 to 80
+
+# Bivariate Analysis
+# Scatterplot of Final Worth vs Age
+ggplot(data, aes(x = age, y = finalWorth)) +
+  geom_point(color = "darkred") +
+  
+  labs(title = "Final Worth (In Millions) vs Age",
+       x = "Age",
+       y = "Final Worth")
+#Illustrates the relationship between age and final worth, where darker points indicate higher final worth, providing insight into potential age-related trends in wealth accumulation.
+#In this graph, we see that final worth is proportional to age, as they grow old, they tend to have more money but we see one billioniare that is in his 50s and have earner around 200 billion which is massive
+
+
+# Multivariate Analysis
+# Boxplot of Final Worth by Gender
+ggplot(data, aes(x = gender, y = finalWorth, fill = gender)) +
+  geom_boxplot() +
+  labs(title = "Final Worth (In Millions) by Gender",
+       x = "Gender",
+       y = "Final Worth",
+       fill = "Gender")
+#Compares the distribution of final worth between genders using boxplots, highlighting potential differences or similarities in wealth distribution based on gender.
+#The final worth (in millions) by gender. The graph shows that men have a higher final worth than women. There are few outliers for men and women both but both have major chunk between 20,000 to 30,000
+
+
+#correlation
+# Multivariate Analysis
+# Scatterplot of Final Worth vs Age colored by Self-Made
+ggplot(data, aes(x = age, y = finalWorth, color = selfMade)) +
+  geom_point() +
+  labs(title = "Final Worth (In Millions) vs Age (Colored by Self-Made Status)",
+       x = "Age",
+       y = "Final Worth",
+       color = "Self-Made")
+
+#Shows how final worth varies with age, with points colored by self-made status, enabling examination of wealth accumulation patterns between self-made and non-self-made individuals.
+#The relationship between final worth and age is complex and varies depending on self-made status. The data shows that for both self-made and inherited wealth, there is a generally positive correlation between age and final worth. However, the rate of increase appears to be steeper for those who are self-made, suggesting that they accumulate wealth at a faster pace later in life.
+
+
+
+
+```
