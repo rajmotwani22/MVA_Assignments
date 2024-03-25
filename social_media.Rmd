@@ -1,0 +1,23 @@
+---
+title: "Social_Media"
+author: "Raj Motwani"
+date: "2024-03-25"
+output: html_document
+---
+
+```{r cars}
+library(psych)
+library(readxl)
+mva <- read_excel("/Users/raj/Downloads/social_media_cleaned.xlsx")
+mva <- mva[-1]
+
+
+#correlation matrix / class avg
+scale <- scale(mva)
+
+classcov <- cor(mva)
+classmean <- colMeans(mva)
+
+mvascale <- mahalanobis(mva, classmean, classcov)
+print(mvascale[1])
+```
