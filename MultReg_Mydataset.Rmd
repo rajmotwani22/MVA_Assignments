@@ -1,0 +1,120 @@
+---
+title: "Raj_Motwani_Assignment_MulReg_MyDataset"
+author: "Raj Motwani"
+date: "2024-04-09"
+output: html_document
+---
+
+```{r}
+library(readr)
+attr <- read_csv("/Users/raj/Desktop/Billionaires Statistics Dataset.csv")
+str(attr)
+
+fit <- lm(rank~age+finalWorth+age+birthMonth+birthDay, data=attr)
+#show the results
+summary(fit)
+#Summary has three sections. Section1: How well does the model fit the data. Section2: Is the hypothesis supported?. Section3: How well does data fit the model .
+
+#The model exhibits a moderate level of fit to the data, as indicated by the Multiple R-squared (0.5027) and Adjusted R-squared (0.4924) values. These statistics suggest that approximately 50.27% of the variance in rank is explained by the independent variables considered, adjusting for the complexity of the model. However, when assessing the significance of individual predictors, only the intercept and finalWorth coefficients appear highly significant, while the coefficients for age, birthMonth, and birthDay do not reach statistical significance. Consequently, the evidence supporting the hypothesis varies across predictors. The residual standard error (RSE) of approximately 40.83 indicates the average deviation between observed and predicted ranks, while the F-statistic's significant p-value (< 2.2e-16) suggests that the model as a whole provides a better fit to the data compared to an intercept-only model.
+
+# Useful Helper Functions
+coefficients(fit)
+library(GGally)
+#ggpairs(data=attr, title="Billioniare Dataset")
+confint(fit,level=0.95)
+fitted(fit)
+residuals(fit)
+#Anova Table
+anova(fit)
+vcov(fit)
+cov2cor(vcov(fit))
+temp <- influence.measures(fit)
+temp
+plot(fit)
+
+# Assessing Outliers
+library(car)
+outlierTest(fit)
+leveragePlots(fit) # leverage plots
+# Influential Observations
+# added variable plots
+avPlots(fit)
+# Cook's D plot
+# identify D values > 4/(n-k-1)
+cutoff <- 4/((nrow(attr)-length(fit$coefficients)-2))
+plot(fit, which=4, cook.levels=cutoff)
+# Influence Plot
+influencePlot(fit, id.method="identify", main="Influence Plot", sub="Circle size is proportial to Cook's Distance" )
+# Normality of Residuals
+stud_res <- rstudent(fit)  # Get studentized residuals
+# qq plot for studentized resid
+qqPlot(stud_res, main = "QQ Plot of Studentized Residuals")
+
+# distribution of studentized residuals
+library(MASS)
+sresid <- studres(fit)
+hist(sresid, freq=FALSE,
+     main="Distribution of Studentized Residuals")
+xfit<-seq(min(sresid),max(sresid),length=40)
+yfit<-dnorm(xfit)
+plot(xfit, yfit, type="l", col="blue", lwd=2, ylab="Density", xlab="Studentized Residuals")  
+lines(xfit, yfit)
+#Non-constant Error Variance
+# Evaluate homoscedasticity
+# non-constant error variance test
+ncvTest(fit)
+# plot studentized residuals vs. fitted values
+spreadLevelPlot(fit)
+#Multi-collinearity
+# Evaluate Collinearity
+vif(fit) # variance inflation factors
+sqrt(vif(fit)) > 2 # problem?
+#Nonlinearity
+# component + residual plot
+crPlots(fit)
+
+#Non-independence of Errors
+# Test for Autocorrelated Errors
+durbinWatsonTest(fit)
+
+#Interpretation from Durbin Watson Test:
+#The D-W statistic (2.04) falls within the inconclusive zone (typically between 1.5 and 2.5). This makes it difficult to definitively reject or accept the null hypothesis.
+#The p-value (0.374) is greater than significance level 0.05. This suggests that we fail to reject the null hypothesis at this significance level.
+
+
+#Residual Analysis: The QQ plot shows a slight curvature, particularly in the tails. The tails of the data points fall slightly outside the diagonal reference line, suggesting that the residuals might have heavier tails than a normal distribution. This indicates potential non-normality.
+
+# Global test of model assumptions
+library(gvlma)
+gvmodel <- gvlma(fit)
+summary(gvmodel)
+fit
+summary(fit)
+fit1 <- fit
+fit2 <- lm(rank~birthMonth+finalWorth+age+birthMonth+birthDay, data=attr)
+# compare models
+anova(fit1, fit2)
+step <- stepAIC(fit, direction="both")
+step$anova # display results
+library(leaps)
+leaps<-regsubsets(rank~finalWorth+finalWorth+age+birthMonth+birthDay,data=attr,nbest=10)
+# view results
+plot(leaps)
+plot(leaps,scale="r2")
+plot(leaps,scale="bic")
+summary(leaps)
+library(relaimpo)
+calc.relimp(fit,type=c("lmg","last","first","pratt"),
+            rela=TRUE)
+# Bootstrap Measures of Relative Importance (1000 samples)
+boot <- boot.relimp(fit, b = 1000, type = c("lmg",
+                                            "last", "first", "pratt"), rank = TRUE,
+                    diff = TRUE, rela = TRUE)
+booteval.relimp(boot) # print result
+plot(booteval.relimp(boot,sort=TRUE)) # plot result
+summary(fit)
+predict.lm(fit, data.frame(age=28,birthDay=28,birthMonth=10,rank=10,finalWorth=45629823) )
+
+#Prediction: For the characteristics stated above, model has predicted that finalwoth for this billioniare will be -66836.54 units based on its birthDay, birthMonth, rank and age
+
+```
