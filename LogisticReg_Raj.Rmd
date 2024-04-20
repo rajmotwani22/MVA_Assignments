@@ -1,0 +1,109 @@
+---
+title: "Raj_Motwani_LogisticRegression"
+author: "Raj Motwani"
+date: "2024-04-18"
+output: html_document
+---
+
+
+```{r }
+library(ggplot2)
+library(cowplot)
+library(caret)
+library(e1071)
+library(pROC)
+library(readr)
+```
+
+Predicting the Impact on Sex based on the Unemployment
+
+```{r }
+data <- read_csv("/Users/raj/Desktop/Billionaires Statistics Dataset.csv")
+str(data)
+
+```
+
+Converting columns "", "Sex", "Age_group", and "Age_categories" into factors.
+
+```{r}
+
+# Factorize categorical variables
+#data$Country_name <- as.factor(data$Country_name)
+#data$Sex <- as.factor(data$Sex)
+data$Age_group <- as.factor(data$Age_group)
+data$Age_categories <- as.factor(data$Age_categories)
+
+# Split the data into train and test sets
+set.seed(123) # for reproducibility
+train_index <- sample(1:nrow(data), 0.7*nrow(data))
+train_data <- data[train_index,]
+
+test_data <- data[-train_index,]
+test_data <- test_data[order(rownames(test_data)), ]
+```
+1) MODEL DEVELOPMENT
+
+```{r}
+# Train logistic regression model
+model <- glm(selfMade ~ ., data = train_data, family = binomial)
+
+# Print summary of the model
+summary(model)
+```
+
+The coefficient for the twenty-two variable is -11.33169. This suggests that for every one-unit increase in the twenty-two variable, the log odds of the response variable Sex decrease by approximately 11.33. Lower AIC values suggest a better trade-off between goodness of fit and model complexity.
+
+
+2) MODEL ACCEPTANCE
+
+```{r}
+
+# Assess model performance on the test set
+predicted <- predict(model, test_data, type = "response")
+predicted
+
+# Create a dataframe containing predicted values and observed values (Sex)
+prediction_data <- data.frame(predicted = predicted, observed = test_data$Sex)
+# Re-run prediction
+
+# ROC curve
+roc_obj <- roc(prediction_data$observed, prediction_data$predicted)
+plot(roc_obj)
+
+```
+
+The inference from the ROC curve will provide insight into the model's performance in discriminating between the two classes (male and female) based on the features included in the model.The ROC curve shows a steep upward slope towards the top left corner, it suggests good performance.
+
+
+3) RESIDUAL ANALYSIS
+
+```{r}
+# Residual analysis
+# Calculate residuals manually
+residuals <- ifelse(prediction_data$observed == 1, 1 - prediction_data$predicted, 0 - prediction_data$predicted)
+plot(residuals ~ prediction_data$predicted, xlab = "Predicted", ylab = "Residuals")
+abline(h = 0, col = "red")
+```
+Residuals are calculated manually and plotted against predicted probabilities to assess the model's bias. The residuals appear evenly distributed around 0 for different predicted probabilities, suggesting unbiased predictions
+
+4) PREDICTED ANALYSIS
+```{r}
+#from CARET
+predicted <- predict(model, newdata = test_data, type = "response")
+# Convert predicted probabilities to binary predictions
+binary_predictions <- ifelse(predicted > 0.5, "Female", "Male")
+predicted
+```
+
+The output provides the predicted probabilities of each observation being in the positive class (female) based on the fitted model. These probabilities range from very low (close to 0) to high (close to 1), indicating the likelihood of each observation belonging to the positive class.These probabilities range from very low to high, indicating the likelihood of each observation belonging to the female class.
+
+5)MODEL ACCURACY
+
+```{r}
+accuracy <- mean(binary_predictions == test_data$Sex)
+accuracy
+
+
+```
+
+An accuracy of 0.5 suggests that the model is not performing well.In summary, while the model shows good discrimination ability based on the ROC curve, its overall accuracy is low, indicating room for improvement.
